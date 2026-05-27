@@ -1,0 +1,321 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 22
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -400,
+        -32
+      ],
+      "id": "e28b9f8b-52cc-43a7-9a2b-bd4ae1086601",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://techcrunch.com/feed/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -192,
+        -32
+      ],
+      "id": "a7b16447-30a9-4b6f-bdf2-07136678de25",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -32
+      ],
+      "id": "69d62baf-faad-4f9e-8fb3-9338c65eefd4",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "738829b2-566d-4c8a-b47a-5268ba74b903",
+              "name": "=title {{ $json.title }}",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a61a0c56-8361-42f7-a8bd-2a821a197eff",
+              "name": "=link {{ $json.link }}",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "2c90a57a-6857-4ac2-9249-7220ec9aaa1f",
+              "name": "=content {{ $json.contentSnippet }}",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        -32
+      ],
+      "id": "b514f7da-d5c1-4630-a764-e25cfad83634",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "## I'm a note \nTrigger para que se ejecute todos los días a las 22:00.",
+        "height": 144,
+        "width": 150,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -464,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "5a2258b8-6c8a-4d3b-b7ef-f7e40d12a02f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Create a professional LinkedIn post based on this tech news.\n\nRules:\n- Professional but engaging tone\n- Max 120 words\n- Use emojis naturally\n- Add a question at the end\n- Include 3 hashtags\n\nTitle:\n{{ $('RSS Read').item.json.title }}\n\nLink:\n{{ $('RSS Read').item.json.link }}\n\nContent:\n{{ $('RSS Read').item.json.contentSnippet }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        -32
+      ],
+      "id": "3ca539ee-3e9a-4421-bafa-9a0f1c3f1311",
+      "name": "Agente IA",
+      "credentials": {
+        "openAiApi": {
+          "id": "QE66pZd4h6TayWYk",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1K_6-evocdF3HLC07UYN4gs_2RhX616EM0dade49dgYs",
+          "mode": "list",
+          "cachedResultName": "N8N_Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1K_6-evocdF3HLC07UYN4gs_2RhX616EM0dade49dgYs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1228474699,
+          "mode": "list",
+          "cachedResultName": "Formato de Tabla en Excel",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1K_6-evocdF3HLC07UYN4gs_2RhX616EM0dade49dgYs/edit#gid=1228474699"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Titulo": "={{ $('RSS Read').item.json.title }}",
+            "Post": "={{ $('RSS Read').item.json.contentSnippet }}",
+            "Link": "={{ $('RSS Read').item.json.link }}",
+            "Fecha": "={{ $('RSS Read').item.json.pubDate }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Titulo",
+              "displayName": "Titulo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Post",
+              "displayName": "Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        784,
+        -96
+      ],
+      "id": "18f67156-1cdc-4974-bcf8-87bf0c6a85ae",
+      "name": "Sheet donde se guarda la informacion",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LgL9C4JqFRPLt9mS",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "martinlujan0666@gmail.com",
+        "subject": "Post para Linkedin",
+        "emailType": "text",
+        "message": "=Titulo:  {{ $('RSS Read').item.json.title }}\nlink: {{ $('RSS Read').item.json.link }}\nText: {{ $json.output[0].content[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        784,
+        144
+      ],
+      "id": "34000ca0-8326-440b-936e-5e8ac0c3c328",
+      "name": "Mail enviado con todos los datos",
+      "webhookId": "e4b3f7e2-daf2-4e34-a276-a71686e4260d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "akYyMgBFRzgZid0c",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Agente IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente IA": {
+      "main": [
+        [
+          {
+            "node": "Sheet donde se guarda la informacion",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mail enviado con todos los datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sheet donde se guarda la informacion": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b51e6d0d-525c-4535-9434-32cc75dbaa35",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aa856051c4b6f3493eebde2878582b09e6d246b3260c8cbe7182b096115f8ef7"
+  },
+  "id": "KxO6gJGbiu0Am15a",
+  "tags": []
+}
